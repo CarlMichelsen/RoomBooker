@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "239202479202",
+    "firebase_url": "https://room-booker-7c15f.firebaseio.com",
+    "project_id": "room-booker-7c15f",
+    "storage_bucket": "room-booker-7c15f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:239202479202:android:93f65cbd4152ef9eeff53b",
+        "android_client_info": {
+          "package_name": "com.example.roombooker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "239202479202-30fa472115pbctk1rocsvmal0931b2tb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.roombooker",
+            "certificate_hash": "6fa8b6d8d4e9ea4375c8116355f641cb8ddac234"
+          }
+        },
+        {
+          "client_id": "239202479202-ge8a4r6u3usls8fcop4cd5o6qms69ht2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfqWMLGuA2nw9q3zBpZESSX1DYRZRtp4s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "239202479202-ge8a4r6u3usls8fcop4cd5o6qms69ht2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
