@@ -8,44 +8,9 @@
 
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:orientation="vertical"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <Button
-            android:id="@+id/testButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="testMethod"
-            android:text="Back"
-            android:textSize="26dp" />
-
-        <Button
-            android:id="@+id/refresh"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="refreshMethod"
-            android:text="Rfrh"
-            android:textSize="26dp" />
-
-
-        <TextView
-            android:id="@+id/outputElement"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Sample Text" />
-
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
+        android:id="@+id/mainListHolder"
+        android:layout_width="500dp"
         android:layout_height="match_parent"
-        android:layout_marginStart="120dp"
         android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -54,10 +19,10 @@
             android:id="@+id/titleElement"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
             android:text="Reservations"
-            android:textSize="28dp"
             android:textColor="#000000"
-            android:layout_marginBottom="10dp"/>
+            android:textSize="28dp" />
 
 
         <ScrollView
@@ -81,6 +46,35 @@
         </ScrollView>
 
     </LinearLayout>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/mainListHolder"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Button
+            android:id="@+id/addReservation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="addReservationMethod"
+            android:text="Add Reservation"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Spinner
+            android:id="@+id/roomSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="32dp"
+            android:spinnerMode="dropdown"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,6 +4,8 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextClock;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -11,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.roombooker.R;
 import com.example.roombooker.REST.Reservation;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class RecyclerViewReservation extends RecyclerView.Adapter<RecyclerViewReservation.ViewHolder> {
@@ -36,7 +40,21 @@ public class RecyclerViewReservation extends RecyclerView.Adapter<RecyclerViewRe
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Reservation element = mData.get(position);
-        holder.titleTextView.setText("Reservation id: "+element.getId());
+
+        holder.titleTextView.setText("Room ["+element.getRoomId().toString()+"]");
+        holder.subtitleTextView.setText(element.getId().toString());
+        holder.purposeTextView.setText(element.getPurpose());
+
+        SimpleDateFormat formatter = new SimpleDateFormat("E HH:MM");
+
+        Date startTime = new Date(element.getFromTime());
+        Date endTime = new Date(element.getToTime());
+
+        String startDateString = formatter.format(startTime);
+        String endDateString = formatter.format(endTime);
+
+        holder.startTextView.setText(startDateString+" "+element.getFromTime());
+        holder.endTextView.setText(endDateString+" "+element.getToTime());
     }
 
     // total number of rows
@@ -48,11 +66,17 @@ public class RecyclerViewReservation extends RecyclerView.Adapter<RecyclerViewRe
 
     // stores and recycles views as they are scrolled off screen
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView titleTextView;
+        TextView titleTextView, subtitleTextView, purposeTextView, startTextView, endTextView;
+        LinearLayout purposeHolder;
 
         ViewHolder(View itemView) {
             super(itemView);
             titleTextView = itemView.findViewById(R.id.recycler_title);
+            subtitleTextView = itemView.findViewById(R.id.recycler_subtitle);
+            purposeTextView = itemView.findViewById(R.id.recycler_purpose);
+            startTextView = itemView.findViewById(R.id.startTime);
+            endTextView = itemView.findViewById(R.id.endTime);
+            purposeHolder = itemView.findViewById(R.id.purposeHolder);
             itemView.setOnClickListener(this);
         }
 

@@ -6,16 +6,17 @@ import retrofit2.Call;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 
 public interface ReservationService {
     @GET("Reservations")
     Call<List<Reservation>> getAllReservations();
 
     @GET("Reservations/{id}")
-    Call<Reservation> getReservationById(int id);
+    Call<Reservation> getReservationById(@Path("id") int id);
 
     @GET("Reservations/room/{roomId}")
-    Call<List<Reservation>> getReservationsByRoomId(int roomId);
+    Call<List<Reservation>> getReservationsByRoomId(@Path("roomId") int roomId);
 
     @GET("Reservations/user/{userId}/{roomId}")
     Call<List<Reservation>> getReservationsByUserIdAndRoomId(int userId, int roomId);
