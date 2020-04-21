@@ -19,10 +19,10 @@ public interface ReservationService {
     Call<List<Reservation>> getReservationsByRoomId(@Path("roomId") int roomId);
 
     @GET("Reservations/user/{userId}/{roomId}")
-    Call<List<Reservation>> getReservationsByUserIdAndRoomId(int userId, int roomId);
+    Call<List<Reservation>> getReservationsByUserIdAndRoomId(@Path("userId") int userId, @Path("roomId") int roomId);
 
     @GET("Reservations/room/{roomId}/{fromTime}/{toTime}")
-    Call<List<Reservation>> getReservationsByRoomIdAndTime(int roomId, int fromTime, int toTime);
+    Call<List<Reservation>> getReservationsByRoomIdAndTime(@Path("roomId") int roomId, @Path("fromTime") int fromTime, @Path("toTime") int toTime);
 
     @GET("Reservations/room/{roomId}/{fromTime}")
     Call<List<Reservation>> getReservationsByRoomIdAndFromTime(int roomId, int fromTime);
@@ -34,7 +34,7 @@ public interface ReservationService {
     Call<List<Reservation>> getReservationsByUserFromTime(int userId, int fromTime);
 
     @DELETE("Reservations/{id}")
-    Call<List<Reservation>> deleteReservation(int id);
+    Call<String> deleteReservation(@Path("id") int id);
 
     @POST("Reservations")
     Call<List<Reservation>> addReservation(Reservation input);

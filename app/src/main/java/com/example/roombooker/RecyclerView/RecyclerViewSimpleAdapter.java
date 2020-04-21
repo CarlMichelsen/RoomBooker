@@ -10,12 +10,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.roombooker.data.Debug;
+import com.example.roombooker.data.BookerDebug;
 
 import java.util.List;
 
 public class RecyclerViewSimpleAdapter<T> extends RecyclerView.Adapter<RecyclerViewSimpleAdapter<T>.MyViewHolder> {
-    private static final String LOG_TAG = Debug.getInstance().TAG;
+    private static final String LOG_TAG = BookerDebug.getInstance().TAG;
     private final List<T> data;
     OnItemClickListener onItemClickListener;
     private final int viewId = View.generateViewId();

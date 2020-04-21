@@ -19,8 +19,8 @@ import com.example.roombooker.REST.ReservationService;
 import com.example.roombooker.REST.Room;
 import com.example.roombooker.REST.RoomService;
 import com.example.roombooker.RecyclerView.RecyclerViewReservation;
-import com.example.roombooker.RecyclerView.RecyclerViewSimpleAdapter;
-import com.example.roombooker.data.Debug;
+import com.example.roombooker.data.BookerDebug;
+import com.google.gson.JsonSerializer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +33,7 @@ public class ScreenActivity extends AppCompatActivity implements RecyclerViewRes
     private String TAG;
 
     Spinner roomSpinner;
+    Room selectedRoom;
 
     private RecyclerView output;
     RecyclerViewReservation adapter;
@@ -47,7 +48,7 @@ public class ScreenActivity extends AppCompatActivity implements RecyclerViewRes
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_screen);
 
-        TAG = Debug.getInstance().TAG;
+        TAG = BookerDebug.getInstance().TAG;
 
         /*
         View decorView = getWindow().getDecorView();
@@ -88,8 +89,9 @@ public class ScreenActivity extends AppCompatActivity implements RecyclerViewRes
                 TextView mainTitle = findViewById(R.id.titleElement);
 
                 if (roomList.size()>0) {
+                    selectedRoom = roomObjects.get(position);
                     mainTitle.setText("Reservations for room " + roomList.get(position));
-                    getAndShowRoomReservations(roomObjects.get(position).getId());
+                    getAndShowRoomReservations(selectedRoom.getId());
                 }
             }
 
@@ -113,11 +115,12 @@ public class ScreenActivity extends AppCompatActivity implements RecyclerViewRes
 
     @Override
     public void onItemClick(View view, int position) {
-        //Comment comment = adapter.getItem(position);
-        // Toast.makeText(this, "You clicked " + animal + " on row number " + position, Toast.LENGTH_SHORT).show();
-        //Intent intent = new Intent(this, CommentDetails.class);
-        //intent.putExtra(CommentDetails.COMMENT, comment);
-        //startActivity(intent);
+        Reservation res = adapter.getItem(position);
+        Intent intent = new Intent(this, ReservationOverview.class);
+
+        intent.putExtra("reservation_value", res);
+
+        startActivity(intent);
     }
 
     public void getAndShowAllReservations() {
@@ -235,7 +238,9 @@ public class ScreenActivity extends AppCompatActivity implements RecyclerViewRes
     }
 
     public void addReservationMethod(View view) {
+        Intent intent = new Intent(this, NewReservation.class);
+        intent.putExtra("room", selectedRoom);
 
-
+        startActivityForResult(intent, 22);
     }
 }

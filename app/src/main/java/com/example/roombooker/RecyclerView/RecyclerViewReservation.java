@@ -53,8 +53,8 @@ public class RecyclerViewReservation extends RecyclerView.Adapter<RecyclerViewRe
         String startDateString = formatter.format(startTime);
         String endDateString = formatter.format(endTime);
 
-        holder.startTextView.setText(startDateString+" "+element.getFromTime());
-        holder.endTextView.setText(endDateString+" "+element.getToTime());
+        holder.startTextView.setText(startDateString);
+        holder.endTextView.setText(endDateString);
     }
 
     // total number of rows

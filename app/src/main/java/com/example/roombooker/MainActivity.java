@@ -13,7 +13,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.roombooker.data.Debug;
+import com.example.roombooker.data.BookerDebug;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        TAG = Debug.getInstance().TAG;
+        TAG = BookerDebug.getInstance().TAG;
 
         email = findViewById(R.id.email);
         password = findViewById(R.id.password);
@@ -135,5 +135,10 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
 
         Toast.makeText(this, "Logged in", Toast.LENGTH_SHORT).show();
+    }
+
+    public void gotoHelpActivity(View view) {
+        Intent intent = new Intent(this, HelpPage.class);
+        startActivity(intent);
     }
 }
