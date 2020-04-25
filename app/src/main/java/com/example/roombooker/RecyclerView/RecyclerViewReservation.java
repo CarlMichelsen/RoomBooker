@@ -47,8 +47,8 @@ public class RecyclerViewReservation extends RecyclerView.Adapter<RecyclerViewRe
 
         SimpleDateFormat formatter = new SimpleDateFormat("E HH:MM");
 
-        Date startTime = new Date(element.getFromTime());
-        Date endTime = new Date(element.getToTime());
+        Date startTime = new Date(element.getFromTime()*1000L);
+        Date endTime = new Date(element.getToTime()*1000L);
 
         String startDateString = formatter.format(startTime);
         String endDateString = formatter.format(endTime);

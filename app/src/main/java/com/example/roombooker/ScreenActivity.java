@@ -3,15 +3,18 @@ package com.example.roombooker;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.roombooker.REST.ApiUtils;
 import com.example.roombooker.REST.Reservation;
@@ -43,12 +46,32 @@ public class ScreenActivity extends AppCompatActivity implements RecyclerViewRes
     ArrayList<Room> roomObjects;
     ArrayList<String> roomList;
 
+    SwipeRefreshLayout swipeRefresh;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_screen);
 
         TAG = BookerDebug.getInstance().TAG;
+
+        swipeRefresh = findViewById(R.id.swipeRefresh);
+
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+                getAndShowAllReservations();
+
+                Toast.makeText(getApplicationContext(), "Refreshing", Toast.LENGTH_SHORT).show();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipeRefresh.setRefreshing(false);
+                    }
+                }, 1000); // Delay in millis
+            }
+        });
 
         /*
         View decorView = getWindow().getDecorView();
@@ -80,7 +103,7 @@ public class ScreenActivity extends AppCompatActivity implements RecyclerViewRes
         roomSpinner = findViewById(R.id.roomSpinner);
 
 
-        spinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,roomList);
+        spinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, roomList);
         roomSpinner.setAdapter(spinnerAdapter);
 
         roomSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -88,7 +111,7 @@ public class ScreenActivity extends AppCompatActivity implements RecyclerViewRes
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 TextView mainTitle = findViewById(R.id.titleElement);
 
-                if (roomList.size()>0) {
+                if (roomList.size() > 0) {
                     selectedRoom = roomObjects.get(position);
                     mainTitle.setText("Reservations for room " + roomList.get(position));
                     getAndShowRoomReservations(selectedRoom.getId());
@@ -134,7 +157,7 @@ public class ScreenActivity extends AppCompatActivity implements RecyclerViewRes
                     List<Reservation> resultList = response.body();
                     reservations = new ArrayList<>(resultList);
 
-                    Log.d(TAG, reservations.size()+"");
+                    Log.d(TAG, reservations.size() + "");
                     updateRecycleView();
                 } else {
                     String message = "Problem " + response.code() + " " + response.message();
@@ -163,7 +186,7 @@ public class ScreenActivity extends AppCompatActivity implements RecyclerViewRes
                     List<Reservation> resultList = response.body();
                     reservations = new ArrayList<>(resultList);
 
-                    Log.d(TAG, "by room:"+reservations.size()+"");
+                    Log.d(TAG, "by room:" + reservations.size() + "");
                     updateRecycleView();
                 } else {
                     String message = "Problem " + response.code() + " " + response.message();
@@ -181,9 +204,9 @@ public class ScreenActivity extends AppCompatActivity implements RecyclerViewRes
 
     public void getAndShowAllRooms() {
         RoomService roomService = ApiUtils.getRoomService();
-        Call<List<Room>> allComments = roomService.getAllRooms();
+        Call<List<Room>> allRoomsList = roomService.getAllRooms();
 
-        allComments.enqueue(new Callback<List<Room>>() {
+        allRoomsList.enqueue(new Callback<List<Room>>() {
             @Override
             public void onResponse(Call<List<Room>> call, Response<List<Room>> response) {
                 if (response.isSuccessful()) {
@@ -195,15 +218,18 @@ public class ScreenActivity extends AppCompatActivity implements RecyclerViewRes
                     String message = "Problem " + response.code() + " " + response.message();
                     Log.d(TAG, message);
                 }
+
+                swipeRefresh.setRefreshing(false);
             }
 
             @Override
             public void onFailure(Call<List<Room>> call, Throwable t) {
                 Log.e(TAG, t.getMessage());
+
+                swipeRefresh.setRefreshing(false);
             }
         });
     }
-
 
 
     public void updateRecycleView() {
@@ -220,9 +246,9 @@ public class ScreenActivity extends AppCompatActivity implements RecyclerViewRes
 
     public void updateRoomSpinner() {
         roomList.clear();
-        for (int i = 0; i<roomObjects.size(); i++) {
+        for (int i = 0; i < roomObjects.size(); i++) {
             Room r = roomObjects.get(i);
-            String str = "["+r.getId()+"] - "+r.getName();
+            String str = "[" + r.getId() + "] - " + r.getName();
             roomList.add(str);
             Log.e(TAG, str);
         }

@@ -3,6 +3,7 @@ package com.example.roombooker.REST;
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
@@ -25,17 +26,17 @@ public interface ReservationService {
     Call<List<Reservation>> getReservationsByRoomIdAndTime(@Path("roomId") int roomId, @Path("fromTime") int fromTime, @Path("toTime") int toTime);
 
     @GET("Reservations/room/{roomId}/{fromTime}")
-    Call<List<Reservation>> getReservationsByRoomIdAndFromTime(int roomId, int fromTime);
+    Call<List<Reservation>> getReservationsByRoomIdAndFromTime(int roomId, int fromTime); //TODO annotations
 
     @GET("Reservations/user/{userId}")
-    Call<List<Reservation>> getReservationsByUser(int userId);
+    Call<List<Reservation>> getReservationsByUser(int userId); //TODO annotations
 
     @GET("Reservations/user/{userId}/{fromTime}")
-    Call<List<Reservation>> getReservationsByUserFromTime(int userId, int fromTime);
+    Call<List<Reservation>> getReservationsByUserFromTime(int userId, int fromTime); //TODO annotations
 
     @DELETE("Reservations/{id}")
-    Call<String> deleteReservation(@Path("id") int id);
+    Call<Void> deleteReservation(@Path("id") int id);
 
     @POST("Reservations")
-    Call<List<Reservation>> addReservation(Reservation input);
+    Call<Integer> addReservation(@Body Reservation input);
 }

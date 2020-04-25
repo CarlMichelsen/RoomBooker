@@ -65,15 +65,33 @@ public class ReservationOverview extends AppCompatActivity {
     }
 
     public String dateToText(int time) {
-        Date date = new Date(time);
+        Date date = new Date(time*1000L);
 
         return date.toString();
     }
 
     public void deleteReservationMethod(View view) {
         ReservationService service = ApiUtils.getReservationService();
-        Call<String> deleteCall = service.deleteReservation(mainReservation.getId());
+        Call<Void> deleteCall = service.deleteReservation(mainReservation.getId());
 
+
+        deleteCall.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (!response.isSuccessful()) {
+                    Toast.makeText(ReservationOverview.this, "Deletion failed :'(", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                Toast.makeText(ReservationOverview.this, "You deleted reservation ["+mainReservation.getId()+"]", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Toast.makeText(ReservationOverview.this, "Fuck", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         /*
         deleteCall.enqueue(new Callback<String>() {

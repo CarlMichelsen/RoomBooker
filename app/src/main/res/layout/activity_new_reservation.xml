@@ -75,7 +75,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/bodyHolder"
                 android:layout_width="match_parent"
-                android:layout_height="450dp"
+                android:layout_height="570dp"
                 android:layout_marginTop="50dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -129,6 +129,7 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
 
+
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/toTimeHolder"
                     android:layout_width="match_parent"
@@ -168,7 +169,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
                         android:layout_marginTop="10dp"
-                        android:text="From Time"
+                        android:text="To Time"
                         android:textColor="#000000"
                         android:textSize="22sp"
                         app:layout_constraintStart_toStartOf="parent"
@@ -176,19 +177,45 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
 
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/indexHolder"
+                    android:layout_width="match_parent"
+                    android:layout_height="180sp"
+                    android:layout_marginTop="25dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/toTimeHolder"
+                    tools:context=".NewReservation">
+
+
+                    <TextView
+                        android:id="@+id/descriptionTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="10dp"
+                        android:text="Purpose"
+                        android:textColor="#000000"
+                        android:textSize="22sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <EditText
+                        android:id="@+id/descriptionBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:ems="12"
+                        android:height="100dp"
+                        android:inputType="textMultiLine"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent" />
 
 
 
-                <Button
-                    android:id="@+id/testButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="20dp"
-                    android:onClick="testMethod"
-                    android:text="Test Button"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout

@@ -5,58 +5,80 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.roombooker.REST.ApiUtils;
+import com.example.roombooker.REST.Reservation;
+import com.example.roombooker.REST.ReservationService;
 import com.example.roombooker.REST.Room;
+import com.example.roombooker.REST.RoomService;
+import com.example.roombooker.data.BookerDebug;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class NewReservation extends AppCompatActivity {
     // reservation information
-    private Integer id;
-    private Integer fromTime;
-    private Integer toTime;
+    private int id;
+    private int fromTime;
+    private int toTime;
     private String userId;
     private String purpose;
-    private Integer roomId;
+    private int roomId;
     // reservation information end
 
-    private Integer currentTime;
+    private int currentTime;
 
+    boolean fromTimeIsSet, toTimeIsSet;
 
     Room sourceRoom;
 
 
     Button createReservationButton;
     TextView fromTimeElement, toTimeElement, roomInformationTextView;
+    EditText descriptionBox;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_reservation);
 
-        roomId = new Integer(-1); // set to -1 so i can validate it without worrying about having roomid 0 selected
-        id = new Integer(-1); // set to -1 so i can validate it without worrying about having reservationid 0 selected
+        fromTimeIsSet = false;
+        toTimeIsSet = false;
+
+        roomId = -1; // set to -1 so i can validate it without worrying about having roomid 0 selected
+        id = -1;
 
         Date now = new Date();
-        currentTime = new Integer((int)getCurrentTime());
+        currentTime = (int)getCurrentTime();
 
 
         sourceRoom = (Room)getIntent().getSerializableExtra("room");
         if (sourceRoom == null) throw new IllegalArgumentException("Could not find source room for new reservation");
 
-        roomId = new Integer(sourceRoom.getId());
+        roomId = sourceRoom.getId();
 
-
+        descriptionBox = findViewById(R.id.descriptionBox);
         createReservationButton = findViewById(R.id.createReservationButton);
         fromTimeElement = findViewById(R.id.selectedFromTime);
         toTimeElement = findViewById(R.id.selectedToTime);
         roomInformationTextView = findViewById(R.id.roomInformationTextView);
 
         roomInformationTextView.setText("For room number " + sourceRoom.getId());
+
+        userId = "carl placeholder user"; //TODO fix this
     }
 
     public void backMethod(View view) {
@@ -69,33 +91,71 @@ public class NewReservation extends AppCompatActivity {
     }
 
     public ArrayList<String> performInputChecks() {
-        Date now = new Date();
-        currentTime = new Integer((int)getCurrentTime());
-        ArrayList<String> errors = new ArrayList<>();
+        ArrayList<String> errors = new ArrayList<String>();
 
-        if (id == -1) errors.add("no id for the reservation");
-        if (fromTime >= currentTime) errors.add("no fromTime for the reservation");
-        if (toTime >= currentTime && toTime >= fromTime) errors.add("invalid toTime for the reservation");
-        if (userId.isEmpty()) errors.add("no userId for the reservation");
-        if (roomId == -1) errors.add("no roomId for the reservation");
+        if ((int)fromTime <= (currentTime-60*10)) errors.add("no fromTime for the reservation");
+        if ((int)toTime < currentTime) errors.add("invalid toTime for the reservation");
+        if (userId == "") errors.add("no userId for the reservation");
+        if ((int)roomId == -1) errors.add("no roomId for the reservation");
+        if (!fromTimeIsSet) errors.add("fromTime is not set");
+        if (!toTimeIsSet) errors.add("toTime is not set");
 
         return errors;
     }
 
-    public boolean validateInformation() {
-        return performInputChecks().size() == 0;
-    }
-
-    public void validateAndEnableButton() { // Create reservation button*
-        createReservationButton.setEnabled(validateInformation());
-    }
 
     public void createReservationMethod(View view) {
-        //TODO HEHEHEHEHEH
+        id = 34;
+        purpose = descriptionBox.getText().toString();
+
+
+        Log.e(BookerDebug.getInstance().TAG, "button");
+        Reservation res = new Reservation(id, fromTime, toTime, userId, purpose, roomId);
+
+        Log.e(BookerDebug.getInstance().TAG, "trying to do it");
+        ReservationService reservationService = ApiUtils.getReservationService();
+
+        Log.e(BookerDebug.getInstance().TAG, "created service");
+        Call<Integer> responsePost = reservationService.addReservation(res);
+
+        Log.e(BookerDebug.getInstance().TAG, "sent the thing");
+
+
+        responsePost.enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(NewReservation.this, "Created a reservation! ["+response.body().toString()+"]", Toast.LENGTH_SHORT).show();
+                    finish();
+                } else {
+                    Toast.makeText(NewReservation.this, "Failed to create a reservation :(", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+                Log.e(BookerDebug.getInstance().TAG, "you did not do it homie!");
+                Toast.makeText(NewReservation.this, "MEGA failed to create a reservation :(", Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
-    public void testMethod(View view) {
-        createReservationButton.setEnabled(validateInformation());
+    public void errorCheckAndDisplay() {
+        ArrayList<String> errors = performInputChecks();
+        boolean informationIsValid = errors.size() == 0;
+
+        if (!informationIsValid) {
+            String str = "Errors";
+
+            for (String s:errors) {
+                str += "\n"+s;
+            }
+
+            Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
+        }
+
+        createReservationButton.setEnabled(informationIsValid);
     }
 
     public void editFromTimeMethod(View view) {
@@ -121,14 +181,29 @@ public class NewReservation extends AppCompatActivity {
 
 
             if (requestCode == 11) { // starttime response
-                fromTimeElement.setText("i tried to change this");
+                Date resultDate = new Date(data.getLongExtra("time", 0)*1000L);
+
+                fromTime = (int)(resultDate.getTime()/1000L);
+
+                fromTimeElement.setText(resultDate.toString());
+                fromTimeIsSet = true;
 
             } else if (requestCode == 12) { // toTime response
-                toTimeElement.setText("i tried to change this");
+                Date resultDate = new Date(data.getLongExtra("time", 0)*1000L);
+
+                toTime = (int)(resultDate.getTime()/1000L);
+
+                toTimeElement.setText(resultDate.toString());
+                toTimeIsSet = true;
+
 
             }
 
-            validateAndEnableButton();
+
+            ArrayList<String> errors = performInputChecks();
+            boolean informationIsValid = errors.size() == 0;
+            createReservationButton.setEnabled(informationIsValid);
+
 
         } else if (resultCode == 400) {
 
@@ -139,11 +214,11 @@ public class NewReservation extends AppCompatActivity {
 
             } else if (requestCode == 12) { // toTime response
                 toTimeElement.setText("i tried to change this");
-
             }
         }
 
 
 
     }
+
 }
