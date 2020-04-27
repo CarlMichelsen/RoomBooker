@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void login(View view) {
-        changeView();
+
 
         String emailText = email.getText().toString();
         String passwordText = password.getText().toString();
@@ -128,6 +128,9 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
+
+        email.setText("");
+        password.setText("");
     }
 
     public void changeView() {

@@ -20,6 +20,9 @@ import com.example.roombooker.REST.ReservationService;
 import com.example.roombooker.REST.Room;
 import com.example.roombooker.REST.RoomService;
 import com.example.roombooker.data.BookerDebug;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -38,6 +41,8 @@ public class NewReservation extends AppCompatActivity {
     private String purpose;
     private int roomId;
     // reservation information end
+
+    FirebaseAuth mAuth;
 
     private int currentTime;
 
@@ -62,11 +67,12 @@ public class NewReservation extends AppCompatActivity {
         id = -1;
 
         Date now = new Date();
-        currentTime = (int)getCurrentTime();
+        currentTime = (int) getCurrentTime();
 
 
-        sourceRoom = (Room)getIntent().getSerializableExtra("room");
-        if (sourceRoom == null) throw new IllegalArgumentException("Could not find source room for new reservation");
+        sourceRoom = (Room) getIntent().getSerializableExtra("room");
+        if (sourceRoom == null)
+            throw new IllegalArgumentException("Could not find source room for new reservation");
 
         roomId = sourceRoom.getId();
 
@@ -78,7 +84,16 @@ public class NewReservation extends AppCompatActivity {
 
         roomInformationTextView.setText("For room number " + sourceRoom.getId());
 
-        userId = "carl placeholder user"; //TODO fix this
+
+        try {
+            mAuth = FirebaseAuth.getInstance();
+            FirebaseUser currentUser = mAuth.getCurrentUser();
+            userId = currentUser.getUid();
+        } catch (Exception e) {
+            Toast.makeText(this, "Failed to get login information\n"+e.toString(), Toast.LENGTH_SHORT).show();
+            finish();
+        }
+
     }
 
     public void backMethod(View view) {
